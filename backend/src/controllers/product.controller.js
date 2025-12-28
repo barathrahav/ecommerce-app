@@ -80,3 +80,13 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: "Update failed" });
   }
 };
+
+// GET /api/admin/products (ADMIN)
+exports.getAllProductsAdmin = async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch products" });
+  }
+};
