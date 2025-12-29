@@ -6,6 +6,13 @@ It provides REST APIs for authentication, product management, cart orders, and a
 ---
 
 ## 🚀 Features Implemented
+- RESTful APIs
+- JWT-based authentication
+- Role-based access (ADMIN / USER)
+- Product & Category management
+- Image upload via Cloudinary
+- MongoDB with Mongoose
+- Secure middleware & validations
 
 ### 🔐 Authentication & Authorization
 - User Registration & Login
@@ -40,6 +47,7 @@ It provides REST APIs for authentication, product management, cart orders, and a
 - MongoDB + Mongoose
 - JWT (jsonwebtoken)
 - bcryptjs
+- Cloudinary
 - dotenv
 
 ---
@@ -62,6 +70,9 @@ Create a `.env` file in the backend root:
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=xxxx
+CLOUDINARY_API_KEY=xxxx
+CLOUDINARY_API_SECRET=xxxx
 
 ▶️ Run Backend Locally
 npm install
@@ -72,6 +83,10 @@ http://localhost:5000
 
 📮 API Base URL
 http://localhost:5000/api
+
+🌱 Seed Categories
+To insert default categories:
+node src/seed/categories.seed.js
 
 ✅ Status
 ✔ Authentication complete

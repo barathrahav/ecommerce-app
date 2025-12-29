@@ -7,11 +7,15 @@ const AdminProducts = () => {
   const [editingId, setEditingId] = useState(null);
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
-    price: "",
     slug: "",
+    price: "",
     description: "",
+    category: "",
+    stock: "",
+    isActive: true,
   });
 
   const loadProducts = async () => {
@@ -23,10 +27,35 @@ const AdminProducts = () => {
     loadProducts();
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+  useEffect(() => {
+  if (!editingId && form.title) {
+    setForm((prev) => ({
+      ...prev,
+      slug: prev.title
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, ""),
+    }));
+  }
+}, [form.title, editingId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = { ...form, images };
+    const payload = {
+  ...form,
+  stock: Number(form.stock) || 0,
+  price: Number(form.price),
+  images,
+};
 
     if (editingId) {
       await api.put(`/products/${editingId}`, payload);
@@ -35,8 +64,17 @@ const AdminProducts = () => {
       await api.post("/products", payload);
     }
 
-    setForm({ title: "", price: "", slug: "", description: "" });
+    setForm({
+      title: "",
+      slug: "",
+      price: "",
+      description: "",
+      category: "",
+      stock: "",
+      isActive: true,
+    });
     setImages([]);
+    setEditingId(null);
     loadProducts();
   };
 
@@ -61,15 +99,21 @@ const AdminProducts = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setImages(res.data.urls);
+      setImages((prev) => [...prev, ...res.data.urls]);
     } catch (err) {
-  console.error("UPLOAD ERROR:", err.response || err);
-  console.log("Cloudinary API KEY:", process.env.CLOUDINARY_API_KEY);
-  alert(err.response?.data?.message || "Image upload failed");
-} finally {
+      console.error("UPLOAD ERROR:", err.response || err);
+      console.log("Cloudinary API KEY:", process.env.CLOUDINARY_API_KEY);
+      alert(err.response?.data?.message || "Image upload failed");
+    } finally {
       setUploading(false);
     }
   };
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    api.get("/categories").then((res) => setCategories(res.data));
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -84,29 +128,74 @@ const AdminProducts = () => {
         className="bg-white p-4 rounded-xl shadow flex gap-3 flex-wrap"
       >
         <input
+          name="title"
           placeholder="Title"
           className="border p-2 rounded w-48"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={handleChange}
           required
         />
 
         <input
-          placeholder="Price"
+          name="price"
           type="number"
+          placeholder="Price"
           className="border p-2 rounded w-32"
           value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          onChange={handleChange}
           required
         />
 
         <input
+          name="slug"
           placeholder="Slug"
           className="border p-2 rounded w-48"
           value={form.slug}
-          onChange={(e) => setForm({ ...form, slug: e.target.value })}
+          onChange={handleChange}
           required
         />
+
+        <select
+  name="category"
+  value={form.category}
+  onChange={handleChange}
+  required
+  className="border p-2 rounded w-48"
+>
+  <option value="">Select Category</option>
+  {categories.map((cat) => (
+    <option key={cat._id} value={cat.slug}>
+      {cat.name}
+    </option>
+  ))}
+</select>
+
+        <input
+          name="stock"
+          type="number"
+          placeholder="Stock"
+          className="border p-2 rounded w-32"
+          value={form.stock}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="description"
+          placeholder="Description"
+          className="border p-2 rounded w-full"
+          value={form.description}
+          onChange={handleChange}
+        />
+
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="isActive"
+            checked={form.isActive}
+            onChange={handleChange}
+          />
+          Active
+        </label>
         <input
           type="file"
           multiple
@@ -140,7 +229,16 @@ const AdminProducts = () => {
             type="button"
             onClick={() => {
               setEditingId(null);
-              setForm({ title: "", price: "", slug: "", description: "" });
+              setForm({
+                title: "",
+                slug: "",
+                price: "",
+                description: "",
+                category: "",
+                stock: "",
+                isActive: true,
+              });
+              setImages([]);
             }}
             className="px-4 py-2 rounded-full bg-gray-300 hover:bg-gray-400"
           >
@@ -187,10 +285,14 @@ const AdminProducts = () => {
                   setEditingId(p._id);
                   setForm({
                     title: p.title,
-                    price: p.price,
                     slug: p.slug,
-                    description: p.description,
+                    price: p.price,
+                    description: p.description || "",
+                    category: p.category || "",
+                    stock: p.stock || "",
+                    isActive: p.isActive,
                   });
+                  setImages(p.images || []);
                 }}
                 className="p-2 rounded-full bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
               >

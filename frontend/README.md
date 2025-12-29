@@ -16,6 +16,9 @@ It consumes APIs from the Node.js backend and provides both **user** and **admin
 - Checkout flow
 - View order history
 - Protected routes for authenticated users
+- Product Management
+- Category dropdown (DB-driven)
+- Image preview for uploads
 
 ### 🧑‍💼 Admin Features
 - Admin dashboard
