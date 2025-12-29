@@ -1,0 +1,214 @@
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+
+const AdminProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    price: "",
+    slug: "",
+    description: "",
+  });
+
+  const loadProducts = async () => {
+    const res = await api.get("/products");
+    setProducts(res.data);
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = { ...form, images };
+
+    if (editingId) {
+      await api.put(`/products/${editingId}`, payload);
+      setEditingId(null);
+    } else {
+      await api.post("/products", payload);
+    }
+
+    setForm({ title: "", price: "", slug: "", description: "" });
+    setImages([]);
+    loadProducts();
+  };
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Delete this product?")) return;
+    await api.delete(`/products/${id}`);
+    loadProducts();
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = e.target.files;
+    if (!files.length) return;
+
+    const formData = new FormData();
+    for (let file of files) {
+      formData.append("images", file);
+    }
+
+    try {
+      setUploading(true);
+      const res = await api.post("/products/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setImages(res.data.urls);
+    } catch (err) {
+  console.error("UPLOAD ERROR:", err.response || err);
+  console.log("Cloudinary API KEY:", process.env.CLOUDINARY_API_KEY);
+  alert(err.response?.data?.message || "Image upload failed");
+} finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* HEADER */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Manage Products</h1>
+      </div>
+
+      {/* CREATE / EDIT FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-4 rounded-xl shadow flex gap-3 flex-wrap"
+      >
+        <input
+          placeholder="Title"
+          className="border p-2 rounded w-48"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          required
+        />
+
+        <input
+          placeholder="Price"
+          type="number"
+          className="border p-2 rounded w-32"
+          value={form.price}
+          onChange={(e) => setForm({ ...form, price: e.target.value })}
+          required
+        />
+
+        <input
+          placeholder="Slug"
+          className="border p-2 rounded w-48"
+          value={form.slug}
+          onChange={(e) => setForm({ ...form, slug: e.target.value })}
+          required
+        />
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="border p-2 rounded"
+        />
+
+        {uploading && <p className="text-sm text-blue-600">Uploading...</p>}
+
+        <div className="flex gap-3 mt-2">
+          {images.map((img) => (
+            <img
+              key={img}
+              src={img}
+              alt="preview"
+              className="w-16 h-16 rounded object-cover border"
+            />
+          ))}
+        </div>
+
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+        >
+          {editingId ? "Update" : "Add"}
+        </button>
+
+        {editingId && (
+          <button
+            type="button"
+            onClick={() => {
+              setEditingId(null);
+              setForm({ title: "", price: "", slug: "", description: "" });
+            }}
+            className="px-4 py-2 rounded-full bg-gray-300 hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+        )}
+      </form>
+
+      {/* PRODUCT LIST */}
+      <div className="bg-white rounded-xl shadow divide-y">
+        {products.map((p) => (
+          <div
+            key={p._id}
+            className="flex justify-between items-center p-4 hover:bg-gray-50"
+          >
+            <div className="flex items-center gap-3">
+              <img
+                src={p.images?.[0] || "https://via.placeholder.com/50"}
+                alt={p.title}
+                className="w-12 h-12 rounded-lg object-cover"
+              />
+              <div>
+                <p className="font-medium">{p.title}</p>
+                <p className="text-sm text-gray-500">
+                  ₹{p.price} • {p.category || "Uncategorized"}
+                </p>
+              </div>
+
+              <span
+                className={`px-3 py-1 rounded-full text-xs
+                  ${
+                    p.isActive
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-300 text-gray-700"
+                  }`}
+              >
+                {p.isActive ? "Active" : "Inactive"}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setEditingId(p._id);
+                  setForm({
+                    title: p.title,
+                    price: p.price,
+                    slug: p.slug,
+                    description: p.description,
+                  });
+                }}
+                className="p-2 rounded-full bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+              >
+                <PencilIcon className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => deleteProduct(p._id)}
+                className="p-2 rounded-full bg-red-100 text-red-700 hover:bg-red-200"
+              >
+                <TrashIcon className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default AdminProducts;
