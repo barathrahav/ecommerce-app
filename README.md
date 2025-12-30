@@ -41,21 +41,24 @@ A full-stack e-commerce application built with **React**, **Node.js**, **Express
 ---
 
 ## 📂 Project Structure
+```
 ecommerce-app/
 │
 ├── frontend/ # React frontend
 ├── backend/ # Node.js backend
 └── README.md # Project documentation
+```
 ---
 
 ## 🛠️ Setup Instructions
 
 1. Clone the repository
-```bash
+```
 git clone https://github.com/your-username/ecommerce-app.git
 Setup backend (see backend README)
 
 Setup frontend (see frontend README)
+```
 
 📌 Status
 🚧 Project is under active development.
