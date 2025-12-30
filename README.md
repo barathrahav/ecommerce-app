@@ -64,5 +64,7 @@ Setup frontend (see frontend README)
 🚧 Project is under active development.
 
 👤 Author
+
 Barath Rahav
+
 Full Stack Developer
