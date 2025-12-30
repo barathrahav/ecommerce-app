@@ -49,6 +49,7 @@ It consumes APIs from the Node.js backend and provides both **user** and **admin
 ---
 
 ## 📂 Project Structure
+```
 frontend/
 ├── admin/
 ├── app/
@@ -60,34 +61,44 @@ frontend/
 ├── styles/
 ├── main.jsx
 └── App.js
+```
+---
 
 ## ⚙️ Environment Variables
 
 Create a `.env` file in the frontend root:
 
-```env
+```
 REACT_APP_API_URL=http://localhost:5000/api
 
-▶️ Run Frontend Locally
-npm install
-npm run dev
+```
 
-Application runs on:
-http://localhost:3000
+## ▶️ Run Frontend Locally
 
-🔐 Authentication Flow
-JWT stored in localStorage
-Axios interceptor attaches token automatically
-Protected routes redirect unauthenticated users
+- npm install
+- npm run dev
 
-✅ Status
+- Application runs on: http://localhost:3000
+
+---
+
+## 🔐 Authentication Flow
+- JWT stored in localStorage
+- Axios interceptor attaches token automatically
+- Protected routes redirect unauthenticated users
+
+---
+
+## ✅ Status
 ✔ Auth flow complete
 ✔ Cart & checkout complete
 ✔ Admin dashboard complete
 ✔ Backend fully integrated
 
-🔮 Future Enhancements
-Toast notifications
-Payment gateway UI
-Image upload UI
-Deployment
+---
+
+## 🔮 Future Enhancements
+- Toast notifications
+- Payment gateway UI
+- Image upload UI
+- Deployment

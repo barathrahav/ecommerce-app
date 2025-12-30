@@ -53,6 +53,7 @@ It provides REST APIs for authentication, product management, cart orders, and a
 ---
 
 ## 📂 Project Structure
+```
 backend/
 ├── controllers/
 ├── models/
@@ -61,41 +62,48 @@ backend/
 ├── config/
 ├── server.js
 └── .env
+```
+---
 
 ## ⚙️ Environment Variables
 
 Create a `.env` file in the backend root:
 
-```env
+```
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=xxxx
 CLOUDINARY_API_KEY=xxxx
 CLOUDINARY_API_SECRET=xxxx
+```
 
-▶️ Run Backend Locally
-npm install
-npm run dev
+---
 
-Server will run on:
-http://localhost:5000
+### ▶️ Run Backend Locally
+- npm install
+- npm run dev
 
-📮 API Base URL
+Server will run on: http://localhost:5000
+
+### 📮 API Base URL
 http://localhost:5000/api
 
-🌱 Seed Categories
-To insert default categories:
-node src/seed/categories.seed.js
+### 🌱 Seed Categories
+- To insert default categories: node src/seed/categories.seed.js
 
-✅ Status
+---
+
+## ✅ Status
 ✔ Authentication complete
 ✔ Products CRUD complete
 ✔ Orders flow complete
 ✔ Admin APIs complete
 
-🔮 Future Enhancements
-Payment Gateway Integration (Razorpay)
-Image upload (Cloudinary / S3)
-Deployment (Render / AWS)
-Rate limiting & refresh tokens
+---
+
+## 🔮 Future Enhancements
+- Payment Gateway Integration (Razorpay)
+- Image upload (Cloudinary / S3)
+- Deployment (Render / AWS)
+- Rate limiting & refresh tokens
