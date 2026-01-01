@@ -1,7 +1,9 @@
 import api from "./api";
 
-export const fetchProducts = async () => {
-  const res = await api.get("/products");
+export const fetchProducts = async (category) => {
+  const url = category ? `/products?category=${category}` : "/products";
+
+  const res = await api.get(url);
   return res.data;
 };
 

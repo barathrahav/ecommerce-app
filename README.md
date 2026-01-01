@@ -7,19 +7,20 @@ A full-stack e-commerce application built with **React**, **Node.js**, **Express
 ## 🚀 Features
 
 ### User Features
-- User authentication (JWT-based)
-- Product listing & product details
-- Category-based browsing
-- Cart & order flow (in progress)
-- Secure API communication
+- Product listing with category filtering
+- Product detail page (slug-based routing)
+- Add to cart with quantity management
+- Cart page with subtotal calculation
+- Checkout and order placement
+- View order history
+- Authentication-protected cart & checkout
 
 ### Admin Features
-- Admin dashboard
-- Product CRUD (Create, Read, Update, Delete)
+- Admin panel for product management
 - Category management (DB-driven)
 - Image upload (Cloudinary)
 - Product activation/deactivation
-- Role-based access control
+- Role-based access control (ADMIN / USER)
 
 ---
 
@@ -27,9 +28,10 @@ A full-stack e-commerce application built with **React**, **Node.js**, **Express
 
 **Frontend**
 - React
-- Axios
 - Tailwind CSS
+- Axios
 - React Router
+- Context API
 
 **Backend**
 - Node.js

@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 
+
 // POST /api/orders
 exports.createOrder = async (req, res) => {
   try {
@@ -46,6 +47,7 @@ exports.createOrder = async (req, res) => {
   });
 
   res.status(201).json(order);
+  
 };
 
 exports.getAllOrders = async (req, res) => {

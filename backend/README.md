@@ -12,6 +12,7 @@ It provides REST APIs for authentication, product management, cart orders, and a
 - Product & Category management
 - Image upload via Cloudinary
 - MongoDB with Mongoose
+- Cart & order APIs
 - Secure middleware & validations
 
 ### 🔐 Authentication & Authorization

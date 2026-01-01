@@ -19,6 +19,7 @@ It consumes APIs from the Node.js backend and provides both **user** and **admin
 - Product Management
 - Category dropdown (DB-driven)
 - Image preview for uploads
+- Responsive design (Tailwind CSS)
 
 ### 🧑‍💼 Admin Features
 - Admin dashboard

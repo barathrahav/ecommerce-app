@@ -1,17 +1,34 @@
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 
-// GET /api/products
+// GET /api/products?page=1&limit=9&category=electronics
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find({ isActive: true }).sort({
-      createdAt: -1,
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+
+    const filter = { isActive: true };
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    const total = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.json({
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
     });
-    res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch products" });
   }
 };
+
 
 // GET /api/products/:slug
 exports.getProductBySlug = async (req, res) => {
@@ -144,13 +161,6 @@ exports.updateProduct = async (req, res) => {
       const slugExists = await Product.findOne({ slug });
       if (slugExists) {
         return res.status(400).json({ message: "Slug already exists" });
-      }
-    }
-
-    if (category) {
-      const categoryExists = await Category.findOne({ slug: category });
-      if (!categoryExists) {
-        return res.status(400).json({ message: "Invalid category" });
       }
     }
 
